@@ -2,7 +2,7 @@
 A lightweight high performance Serilog sink that writes to SQLite database.
 
 ## Getting started
-Install [Serilog.Sinks.SQLite](https://www.nuget.org/packages/Serilog.Sinks.SQLite) from NuGet
+Install [Serilog.Sinks.SQLite-Net-PCL](https://www.nuget.org/packages/Serilog.Sinks.SQLite-Net-PCL) from NuGet
 
 ```PowerShell
 Install-Package Serilog.Sinks.SQLite
@@ -45,5 +45,3 @@ In your application's App.config or Web.config file, specify the SQLite sink ass
 
 ## Performance
 SQLite sink automatically buffers log internally and flush to SQLite database in batches on dedicated thread.
-
-[![Build status](https://ci.appveyor.com/api/projects/status/sqjvxji4w84iyqa0?svg=true)](https://ci.appveyor.com/project/SaleemMirza/serilog-sinks-sqlite)
