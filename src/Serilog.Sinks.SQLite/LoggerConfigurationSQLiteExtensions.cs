@@ -18,10 +18,11 @@ namespace Serilog
 {
     using System;
     using System.IO;
+    using global::SQLite;
     using Serilog.Configuration;
     using Serilog.Core;
     using Serilog.Events;
-    using Serilog.Sinks.SQLite;
+    using Serilog.SQLite.Logging;
 
     /// <summary>
     ///     Adds the WriteTo.SQLite() extension method to <see cref="LoggerConfiguration" />.
@@ -52,13 +53,9 @@ namespace Serilog
             string sqliteDbPath,
             string tableName = "Logs",
             LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
-            IFormatProvider formatProvider = null,
             bool storeTimestampInUtc = false,
-            TimeSpan? retentionPeriod = null,
-            TimeSpan? retentionCheckInterval = null,
             LoggingLevelSwitch levelSwitch = null,
             uint batchSize = 100,
-            uint maxDatabaseSize = 10,
             bool rollOver = true)
         {
             if (loggerConfiguration == null) {
@@ -90,17 +87,71 @@ namespace Serilog
                     new SQLiteSink(
                         sqliteDbFile.FullName,
                         tableName,
-                        formatProvider,
                         storeTimestampInUtc,
-                        retentionPeriod,
-                        retentionCheckInterval,
                         batchSize,
-                        maxDatabaseSize,
                         rollOver),
                     restrictedToMinimumLevel,
                     levelSwitch);
             }
             catch (Exception ex) {
+                SelfLog.WriteLine(ex.Message);
+
+                throw;
+            }
+        }
+
+        public static LoggerConfiguration SQLite(
+           this LoggerSinkConfiguration loggerConfiguration,
+           SQLiteConnectionString sqlLiteConnectionString,
+           string tableName = "Logs",
+           LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
+           bool storeTimestampInUtc = false,
+           LoggingLevelSwitch levelSwitch = null,
+           uint batchSize = 100,
+           bool rollOver = true)
+        {
+            if (loggerConfiguration == null)
+            {
+                SelfLog.WriteLine("Logger configuration is null");
+
+                throw new ArgumentNullException(nameof(loggerConfiguration));
+            }
+
+            //if (string.IsNullOrEmpty(sqliteDbPath))
+            //{
+            //    SelfLog.WriteLine("Invalid sqliteDbPath");
+
+            //    throw new ArgumentNullException(nameof(sqliteDbPath));
+            //}
+
+            //if (!Uri.TryCreate(sqliteDbPath, UriKind.RelativeOrAbsolute, out var sqliteDbPathUri))
+            //{
+            //    throw new ArgumentException($"Invalid path {nameof(sqliteDbPath)}");
+            //}
+
+            //if (!sqliteDbPathUri.IsAbsoluteUri)
+            //{
+            //    var basePath = System.Reflection.Assembly.GetEntryAssembly().Location;
+            //    sqliteDbPath = Path.Combine(Path.GetDirectoryName(basePath) ?? throw new NullReferenceException(), sqliteDbPath);
+            //}
+
+            try
+            {
+                //var sqliteDbFile = new FileInfo(sqliteDbPath);
+                //sqliteDbFile.Directory?.Create();
+
+                return loggerConfiguration.Sink(
+                    new SQLiteSink(
+                        sqlLiteConnectionString,
+                        tableName,
+                        storeTimestampInUtc,
+                        batchSize,
+                        rollOver),
+                    restrictedToMinimumLevel,
+                    levelSwitch);
+            }
+            catch (Exception ex)
+            {
                 SelfLog.WriteLine(ex.Message);
 
                 throw;
