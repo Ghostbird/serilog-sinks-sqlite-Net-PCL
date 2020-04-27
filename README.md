@@ -42,6 +42,3 @@ In your application's App.config or Web.config file, specify the SQLite sink ass
     <add key="serilog:write-to:SQLite.storeTimestampInUtc" value="true"/>
 </appSettings>    
 ```
-
-## Performance
-SQLite sink automatically buffers log internally and flush to SQLite database in batches on dedicated thread.
