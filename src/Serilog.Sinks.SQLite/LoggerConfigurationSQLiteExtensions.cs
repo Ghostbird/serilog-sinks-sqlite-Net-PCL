@@ -70,12 +70,8 @@ namespace Serilog
                 throw new ArgumentNullException(nameof(sqliteDbPath));
             }
 
-            if (!Uri.TryCreate(sqliteDbPath, UriKind.RelativeOrAbsolute, out var sqliteDbPathUri)) {
-                throw new ArgumentException($"Invalid path {nameof(sqliteDbPath)}");
-            }
-
-            if (!sqliteDbPathUri.IsAbsoluteUri) {
-                var basePath = System.Reflection.Assembly.GetEntryAssembly().Location;
+            if (!Path.IsPathRooted(sqliteDbPath)) {
+                var basePath = (System.Reflection.Assembly.GetEntryAssembly() ?? System.Reflection.Assembly.GetExecutingAssembly()).Location;
                 sqliteDbPath = Path.Combine(Path.GetDirectoryName(basePath) ?? throw new NullReferenceException(), sqliteDbPath);
             }
 
